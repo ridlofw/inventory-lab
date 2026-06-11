@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/favicon.ico" alt="Logo" width="100" height="100" />
+  <img src="https://febi.walisongo.ac.id/wp-content/uploads/2020/09/Logo-UIN-Walisongo-Warna-PNG-742x1024.png" alt="Logo" width="100" height="100" />
   <h1>🧪 Sistem Manajemen Inventaris Laboratorium</h1>
   <h3>Universitas Islam Negeri (UIN) Walisongo Semarang</h3>
   <p>
@@ -23,12 +23,14 @@
 Aplikasi ini memisahkan hak akses menjadi dua peran utama untuk menjaga keamanan dan alur kerja laboratorium yang efisien:
 
 ### 🎓 Mahasiswa (Pengguna)
+
 - **🛍️ Katalog Komoditas:** Melihat daftar lengkap alat (barang) dan bahan praktikum yang tersedia beserta detail stoknya.
 - **🛒 Sistem Keranjang (Cart):** Mengajukan peminjaman alat atau permintaan bahan praktikum dengan mudah melalui sistem keranjang.
 - **📊 Dashboard Interaktif:** Memantau ringkasan aktivitas, jumlah peminjaman aktif, dan status pengajuan terkini.
 - **🕒 Riwayat Transaksi:** Melacak status detail setiap pengajuan secara real-time (Menunggu, Disetujui, Dipinjam, Ditolak, atau Selesai).
 
 ### 👨‍💻 Admin (Laboran/Asisten)
+
 - **📈 Dashboard Analitik:** Visualisasi data statistik ketersediaan stok, tren peminjaman, dan aktivitas lab menggunakan grafik interaktif (Recharts).
 - **📦 Manajemen Stok:** Mengelola data komoditas (tambah, edit, hapus), memperbarui stok awal, serta mencatat barang rusak atau hilang secara otomatis.
 - **✅ Verifikasi Cepat:** Menyetujui atau menolak pengajuan peminjaman/permintaan dari mahasiswa dengan validasi ketersediaan stok real-time.
@@ -38,7 +40,7 @@ Aplikasi ini memisahkan hak akses menjadi dua peran utama untuk menjaga keamanan
 
 ## 🏗️ Arsitektur & Teknologi
 
-Proyek ini dibangun menggunakan *stack* teknologi modern untuk performa tinggi dan pengalaman pengguna (UX) yang premium:
+Proyek ini dibangun menggunakan _stack_ teknologi modern untuk performa tinggi dan pengalaman pengguna (UX) yang premium:
 
 - **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
 - **Library UI:** [React 19](https://react.dev/)
@@ -66,17 +68,20 @@ Sistem didukung oleh database relasional yang kuat untuk menjaga integritas data
 Ikuti langkah-langkah berikut untuk menjalankan proyek ini di mesin lokal Anda.
 
 ### 1. Prasyarat
+
 - Node.js (v18 atau lebih baru)
 - npm / pnpm / yarn
 - PostgreSQL (Lokal atau Cloud seperti Supabase/Neon)
 
 ### 2. Clone Repositori
+
 ```bash
 git clone <url-repo-anda>
 cd inventory-lab
 ```
 
 ### 3. Install Dependensi
+
 ```bash
 npm install
 # atau
@@ -84,7 +89,9 @@ yarn install
 ```
 
 ### 4. Konfigurasi Environment Variables
-Buat file `.env` di *root* direktori proyek dan sesuaikan dengan URL database PostgreSQL Anda:
+
+Buat file `.env` di _root_ direktori proyek dan sesuaikan dengan URL database PostgreSQL Anda:
+
 ```env
 # Contoh koneksi database PostgreSQL
 DATABASE_URL="postgresql://user:password@localhost:5432/inventory_lab?schema=public"
@@ -93,13 +100,16 @@ DATABASE_URL="postgresql://user:password@localhost:5432/inventory_lab?schema=pub
 ```
 
 ### 5. Setup Database & Seed Data
+
 Jalankan perintah berikut untuk mensinkronisasi skema Prisma ke database dan memasukkan data awal (seeding admin/dummy data):
+
 ```bash
 npx prisma db push
 npm run dev # (Atau jalankan script seed secara manual: npx tsx prisma/seed.ts)
 ```
 
 ### 6. Jalankan Development Server
+
 ```bash
 npm run dev
 ```
