@@ -1,12 +1,101 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma
+// Sistem Manajemen Inventaris Laboratorium UIN Walisongo
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+}
+
+// ================= ENUMS =================
+
+enum Role {
+  ADMIN
+  MAHASISWA
+}
+
+enum TipeKomoditas {
+  BARANG
+  BAHAN
+}
+
+enum StatusTransaksi {
+  MENUNGGU_PINJAM
+  MENUNGGU_MINTA
+  DIPINJAM
+  DIAMBIL
+  MENUNGGU_KEMBALI
+  SELESAI
+  DITOLAK
+}
+
+enum KondisiBarang {
+  AMAN
+  RUSAK
+  HILANG
+}
+
+// ================= MODELS =================
+
+model User {
+  id        String      @id @default(uuid())
+  email     String      @unique
+  password  String
+  nama      String
+  nim       String?     @unique
+  role      Role        @default(MAHASISWA)
+
+  transaksi Transaksi[]
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Komoditas {
+  id           String          @id @default(uuid())
+  nama         String
+  tipe         TipeKomoditas
+  satuan       String          // "pcs", "liter", "gram"
+
+  stokAwal     Int
+  totalRusak   Int             @default(0)
+  totalHilang  Int             @default(0)
+  stokTotal    Int             // Kalkulasi: stokAwal - totalRusak - totalHilang
+  stokTersedia Int             // Kalkulasi: stokTotal - (jumlah yang sedang DIPINJAM)
+
+  detail       DetailTransaksi[]
+
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Transaksi {
+  id                   String            @id @default(uuid())
+  userId               String
+  user                 User              @relation(fields: [userId], references: [id])
+  catatanKegiatan      String            @db.Text
+  tanggalPengajuan     DateTime          @default(now())
+  estimasiPengembalian DateTime?
+
+  detail               DetailTransaksi[]
+}
+
+model DetailTransaksi {
+  id                  String          @id @default(uuid())
+  transaksiId         String
+  transaksi           Transaksi       @relation(fields: [transaksiId], references: [id], onDelete: Cascade)
+
+  komoditasId         String
+  komoditas           Komoditas       @relation(fields: [komoditasId], references: [id])
+
+  jumlah              Int
+  status              StatusTransaksi
+
+  tanggalVerifikasi   DateTime?
+  tanggalDikembalikan DateTime?
+
+  kondisiKembali      KondisiBarang?
+  catatanPengembalian String?         @db.Text
 }
