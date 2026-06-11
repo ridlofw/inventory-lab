@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://febi.walisongo.ac.id/wp-content/uploads/2020/09/Logo-UIN-Walisongo-Warna-PNG-742x1024.png" alt="Logo" width="100" height="100" />
+  <img src="https://febi.walisongo.ac.id/wp-content/uploads/2020/09/Logo-UIN-Walisongo-Warna-PNG-742x1024.png" alt="Logo" width="100" height="138" />
   <h1>🧪 Sistem Manajemen Inventaris Laboratorium</h1>
   <h3>Universitas Islam Negeri (UIN) Walisongo Semarang</h3>
   <p>
