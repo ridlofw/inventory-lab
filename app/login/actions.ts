@@ -40,6 +40,11 @@ export async function loginAction(
     });
 
     if (dbUser) {
+      if (data.user.user_metadata?.role !== dbUser.role) {
+        await supabase.auth.updateUser({
+          data: { role: dbUser.role },
+        });
+      }
       redirectUrl =
         dbUser.role === "ADMIN" ? "/admin/dashboard" : "/mahasiswa/dashboard";
     } else {
