@@ -57,7 +57,13 @@ model Komoditas {
   id           String          @id @default(uuid())
   nama         String
   tipe         TipeKomoditas
-  satuan       String          // "pcs", "liter", "gram"
+  satuan       String          // "pcs", "buah", "set", "unit", "gram", "liter"
+
+  merk             String?
+  spesifikasi      String?         @db.Text
+  tahunPerolehan   String?
+  lokasi           String?
+  ruangPenyimpanan String?
 
   stokAwal     Int
   totalRusak   Int             @default(0)

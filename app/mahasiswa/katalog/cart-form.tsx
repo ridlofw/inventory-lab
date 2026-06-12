@@ -17,7 +17,7 @@ function CustomSelect({
 }: { 
   value: string, 
   onChange: (val: string) => void, 
-  options: {value: string, label: string, disabled: boolean, stok: number, tipe: string, satuan: string}[] 
+  options: {value: string, label: string, disabled: boolean, stok: number, tipe: string, satuan: string, merk?: string, spesifikasi?: string}[] 
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -101,6 +101,11 @@ function CustomSelect({
                     <span className={`truncate ${value === opt.value ? 'font-bold text-emerald-700' : 'font-semibold'}`}>
                       {opt.label}
                     </span>
+                    {(opt.merk || opt.spesifikasi) && (
+                      <span className="text-[10px] text-slate-500 truncate" title={`${opt.merk || ''} ${opt.merk && opt.spesifikasi ? '-' : ''} ${opt.spesifikasi || ''}`}>
+                        {opt.merk} {opt.merk && opt.spesifikasi ? '-' : ''} {opt.spesifikasi}
+                      </span>
+                    )}
                     <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
                       {opt.tipe === "BARANG" ? "ALAT LAB" : "BAHAN KIMIA"} • {opt.satuan}
                     </span>
@@ -246,7 +251,9 @@ export function CartForm({ katalog }: { katalog: Komoditas[] }) {
                 disabled: k.stokTersedia === 0,
                 stok: k.stokTersedia,
                 tipe: k.tipe,
-                satuan: k.satuan
+                satuan: k.satuan,
+                merk: (k as any).merk || "",
+                spesifikasi: (k as any).spesifikasi || ""
               }));
               
               return (
@@ -447,6 +454,11 @@ export function CartForm({ katalog }: { katalog: Komoditas[] }) {
                     <div key={idx} className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm">
                       <div className="flex flex-col">
                         <span className="font-bold text-slate-800 text-sm">{selected.nama}</span>
+                        {((selected as any).merk || (selected as any).spesifikasi) && (
+                          <span className="text-[10px] text-slate-500 mt-0.5 leading-tight">
+                            {(selected as any).merk} {((selected as any).merk && (selected as any).spesifikasi) ? '-' : ''} {(selected as any).spesifikasi}
+                          </span>
+                        )}
                         <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mt-0.5">
                           {selected.tipe === "BARANG" ? "ALAT LAB" : "BAHAN KIMIA"}
                         </span>

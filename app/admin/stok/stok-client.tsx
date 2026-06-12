@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Edit2, Trash2, Search, AlertCircle, Save, X, Box, Package, ChevronDown, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowUpDown, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
 function CustomDropdown({ 
   value, 
@@ -75,23 +76,68 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
   const [formData, setFormData] = useState({
     nama: "",
     tipe: "BARANG" as TipeKomoditas,
-    satuan: "pcs",
+    satuan: "buah",
     stokAwal: 1,
     totalRusak: 0,
     totalHilang: 0,
+    merk: "",
+    spesifikasi: "",
+    tahunPerolehan: "",
+    lokasi: "",
+    ruangPenyimpanan: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const filteredData = initialData.filter(item => 
-    item.nama.toLowerCase().includes(search.toLowerCase()) || 
-    item.tipe.toLowerCase().includes(search.toLowerCase())
-  );
+  // Pagination & Sorting & Filtering states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+  const [lokasiFilter, setLokasiFilter] = useState("SEMUA");
+
+  // 1. Filter
+  let processedData = initialData.filter(item => {
+    const matchSearch = item.nama.toLowerCase().includes(search.toLowerCase()) || 
+                        item.tipe.toLowerCase().includes(search.toLowerCase()) ||
+                        ((item as any).merk || "").toLowerCase().includes(search.toLowerCase());
+    const matchLokasi = lokasiFilter === "SEMUA" || ((item as any).lokasi || "").includes(lokasiFilter);
+    return matchSearch && matchLokasi;
+  });
+
+  // 2. Sort
+  if (sortConfig !== null) {
+    processedData.sort((a, b) => {
+      let aValue: any = a[sortConfig.key as keyof Komoditas];
+      let bValue: any = b[sortConfig.key as keyof Komoditas];
+      
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // 3. Paginate
+  const totalPages = Math.max(1, Math.ceil(processedData.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = processedData.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Reset to page 1 when search or filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, lokasiFilter, itemsPerPage]);
 
   const openAddModal = () => {
     setEditingId(null);
-    setFormData({ nama: "", tipe: "BARANG", satuan: "pcs", stokAwal: 1, totalRusak: 0, totalHilang: 0 });
+    setFormData({ nama: "", tipe: "BARANG", satuan: "buah", stokAwal: 1, totalRusak: 0, totalHilang: 0, merk: "", spesifikasi: "", tahunPerolehan: "", lokasi: "", ruangPenyimpanan: "" });
     setError(null);
     setIsModalOpen(true);
   };
@@ -105,6 +151,11 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
       stokAwal: item.stokAwal,
       totalRusak: item.totalRusak,
       totalHilang: item.totalHilang,
+      merk: (item as any).merk || "",
+      spesifikasi: (item as any).spesifikasi || "",
+      tahunPerolehan: (item as any).tahunPerolehan || "",
+      lokasi: (item as any).lokasi || "",
+      ruangPenyimpanan: (item as any).ruangPenyimpanan || "",
     });
     setError(null);
     setIsModalOpen(true);
@@ -124,6 +175,11 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
         tipe: formData.tipe,
         satuan: formData.satuan,
         stokAwal: formData.stokAwal,
+        merk: formData.merk,
+        spesifikasi: formData.spesifikasi,
+        tahunPerolehan: formData.tahunPerolehan,
+        lokasi: formData.lokasi,
+        ruangPenyimpanan: formData.ruangPenyimpanan,
       });
     }
 
@@ -153,17 +209,30 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
   return (
     <div className="space-y-6">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <Input 
-            placeholder="Cari nama atau tipe komoditas..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 h-11 rounded-xl bg-white border-slate-200"
-          />
+      <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input 
+              placeholder="Cari nama, merk, tipe..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 h-11 rounded-xl bg-white border-slate-200"
+            />
+          </div>
+          <div className="w-full sm:w-48 shrink-0">
+            <CustomDropdown 
+              value={lokasiFilter}
+              onChange={setLokasiFilter}
+              options={[
+                { value: "SEMUA", label: "Semua Lokasi" },
+                { value: "Kampus 2", label: "Kampus 2" },
+                { value: "Kampus 3", label: "Kampus 3" },
+              ]}
+            />
+          </div>
         </div>
-        <Button onClick={openAddModal} className="h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 px-6">
+        <Button onClick={openAddModal} className="h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 px-6 shrink-0 w-full lg:w-auto">
           <Plus className="mr-2 h-4 w-4" /> Tambah Komoditas
         </Button>
       </div>
@@ -171,40 +240,60 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
       {/* Table Card */}
       <Card className="rounded-2xl shadow-sm border-slate-200 overflow-hidden bg-white">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600">
+          <table className="w-full text-left text-sm text-slate-600 table-fixed min-w-[900px]">
             <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4">Komoditas</th>
-                <th className="px-6 py-4">Tipe & Satuan</th>
-                <th className="px-6 py-4 text-center">Stok Awal</th>
-                <th className="px-6 py-4 text-center">Rusak / Hilang</th>
-                <th className="px-6 py-4 text-center">Layak Pakai</th>
-                <th className="px-6 py-4 text-center">Tersedia</th>
-                <th className="px-6 py-4 text-right">Aksi</th>
+                <th className="px-4 py-4 w-[24%] cursor-pointer hover:bg-slate-100/50 transition-colors" onClick={() => handleSort('nama')}>
+                  <div className="flex items-center gap-2">Komoditas <ArrowUpDown className="w-3 h-3 text-slate-400 shrink-0" /></div>
+                </th>
+                <th className="px-4 py-4 w-[20%]">Detail</th>
+                <th className="px-4 py-4 w-[16%]">Lokasi</th>
+                <th className="px-2 py-4 w-[8%] text-center cursor-pointer hover:bg-slate-100/50 transition-colors" onClick={() => handleSort('stokAwal')}>
+                  <div className="flex items-center justify-center gap-1">Awal <ArrowUpDown className="w-3 h-3 text-slate-400 shrink-0" /></div>
+                </th>
+                <th className="px-2 py-4 w-[8%] text-center leading-tight">Rusak Hilang</th>
+                <th className="px-2 py-4 w-[8%] text-center cursor-pointer hover:bg-slate-100/50 transition-colors" onClick={() => handleSort('stokTotal')}>
+                  <div className="flex items-center justify-center gap-1">Layak <ArrowUpDown className="w-3 h-3 text-slate-400 shrink-0" /></div>
+                </th>
+                <th className="px-2 py-4 w-[8%] text-center cursor-pointer hover:bg-slate-100/50 transition-colors" onClick={() => handleSort('stokTersedia')}>
+                  <div className="flex items-center justify-center gap-1">Sisa <ArrowUpDown className="w-3 h-3 text-slate-400 shrink-0" /></div>
+                </th>
+                <th className="px-4 py-4 w-[8%] text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredData.length === 0 ? (
+              {paginatedData.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-slate-400 italic">
+                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400 italic">
                     Tidak ada komoditas ditemukan.
                   </td>
                 </tr>
               ) : (
-                filteredData.map((item) => (
+                paginatedData.map((item) => (
                   <tr key={item.id} className={`transition-colors hover:bg-slate-50/50 ${item.stokTersedia === 0 ? 'bg-red-50/40' : ''}`}>
                     <td className="px-6 py-4 font-bold text-slate-800">
                       <div className="flex items-center gap-3">
                         <div className={`p-2 rounded-lg shrink-0 ${item.stokTersedia === 0 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-500'}`}>
                           {item.tipe === "BARANG" ? <Box className="w-4 h-4" /> : <Package className="w-4 h-4" />}
                         </div>
-                        <span className="truncate max-w-[200px]">{item.nama}</span>
+                        <div className="min-w-0">
+                          <span className="truncate block max-w-[200px]">{item.nama}</span>
+                          <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{item.tipe} · per {item.satuan}</span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-slate-700">{item.tipe}</span>
-                        <span className="text-xs text-slate-400">per {item.satuan}</span>
+                      <div className="min-w-0">
+                        {(item as any).merk && <p className="text-xs font-semibold text-slate-700 truncate max-w-[180px]">{(item as any).merk}</p>}
+                        {(item as any).spesifikasi && <p className="text-[11px] text-slate-400 truncate max-w-[180px]">{(item as any).spesifikasi}</p>}
+                        {!(item as any).merk && !(item as any).spesifikasi && <span className="text-xs text-slate-300 italic">-</span>}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="min-w-0">
+                        {(item as any).ruangPenyimpanan && <p className="text-xs font-semibold text-slate-700 truncate max-w-[150px]">{(item as any).ruangPenyimpanan}</p>}
+                        {(item as any).lokasi && <p className="text-[11px] text-slate-400">{(item as any).lokasi}</p>}
+                        {!(item as any).ruangPenyimpanan && !(item as any).lokasi && <span className="text-xs text-slate-300 italic">-</span>}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-center font-medium">{item.stokAwal}</td>
@@ -238,6 +327,43 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="border-t border-slate-100 bg-slate-50/50 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-sm text-slate-500">
+            <span>Tampilkan</span>
+            <div className="w-20">
+              <CustomDropdown 
+                value={itemsPerPage.toString()} 
+                onChange={(v) => setItemsPerPage(Number(v))} 
+                options={[{value: "10", label: "10"}, {value: "20", label: "20"}, {value: "50", label: "50"}, {value: "100", label: "100"}]} 
+              />
+            </div>
+            <span>dari {processedData.length} data</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" size="sm" 
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="h-9 px-3 rounded-lg border-slate-200"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" /> Prev
+            </Button>
+            <div className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-sm font-semibold text-slate-700 min-w-[3rem] text-center shadow-sm">
+              {currentPage} / {totalPages}
+            </div>
+            <Button 
+              variant="outline" size="sm" 
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="h-9 px-3 rounded-lg border-slate-200"
+            >
+              Next <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
         </div>
       </Card>
 
@@ -294,7 +420,10 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
                       value={formData.satuan} 
                       onChange={(val) => setFormData({...formData, satuan: val})}
                       options={[
+                        { value: "buah", label: "buah" },
                         { value: "pcs", label: "pcs" },
+                        { value: "set", label: "set" },
+                        { value: "unit", label: "unit" },
                         { value: "gram", label: "gram" },
                         { value: "liter", label: "liter" }
                       ]}
@@ -337,6 +466,59 @@ export function StokClient({ initialData }: { initialData: Komoditas[] }) {
                 </div>
               </div>
 
+              {/* Detail Spesifikasi */}
+              <div className="pt-2 border-t border-slate-100">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Detail Spesifikasi (Opsional)</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Merk / Pabrikan</label>
+                    <Input 
+                      value={formData.merk} 
+                      onChange={(e) => setFormData({...formData, merk: e.target.value})}
+                      placeholder="Contoh: Olympus"
+                      className="h-11 rounded-xl border-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Tahun Perolehan</label>
+                    <Input 
+                      value={formData.tahunPerolehan} 
+                      onChange={(e) => setFormData({...formData, tahunPerolehan: e.target.value})}
+                      placeholder="Contoh: 2020"
+                      className="h-11 rounded-xl border-slate-200"
+                    />
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Spesifikasi / Tipe / Ukuran</label>
+                  <Input 
+                    value={formData.spesifikasi} 
+                    onChange={(e) => setFormData({...formData, spesifikasi: e.target.value})}
+                    placeholder="Contoh: CX23, Binokuler"
+                    className="h-11 rounded-xl border-slate-200"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Lokasi</label>
+                    <Input 
+                      value={formData.lokasi} 
+                      onChange={(e) => setFormData({...formData, lokasi: e.target.value})}
+                      placeholder="Contoh: Kampus 3"
+                      className="h-11 rounded-xl border-slate-200"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 block">Ruang Penyimpanan</label>
+                    <Input 
+                      value={formData.ruangPenyimpanan} 
+                      onChange={(e) => setFormData({...formData, ruangPenyimpanan: e.target.value})}
+                      placeholder="Contoh: Lab. Ekologi"
+                      className="h-11 rounded-xl border-slate-200"
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="pt-4 flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)} className="h-11 px-6 rounded-xl border-slate-200 hover:bg-slate-50">
                   Batal

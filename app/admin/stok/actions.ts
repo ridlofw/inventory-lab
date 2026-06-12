@@ -18,6 +18,11 @@ export async function addKomoditas(data: {
   tipe: TipeKomoditas;
   satuan: string;
   stokAwal: number;
+  merk?: string;
+  spesifikasi?: string;
+  tahunPerolehan?: string;
+  lokasi?: string;
+  ruangPenyimpanan?: string;
 }) {
   try {
     await verifyAdmin();
@@ -29,6 +34,11 @@ export async function addKomoditas(data: {
         stokAwal: data.stokAwal,
         stokTotal: data.stokAwal,
         stokTersedia: data.stokAwal,
+        merk: data.merk || null,
+        spesifikasi: data.spesifikasi || null,
+        tahunPerolehan: data.tahunPerolehan || null,
+        lokasi: data.lokasi || null,
+        ruangPenyimpanan: data.ruangPenyimpanan || null,
       },
     });
     revalidatePath("/admin/stok");
@@ -47,6 +57,11 @@ export async function updateKomoditas(
     stokAwal: number;
     totalRusak: number;
     totalHilang: number;
+    merk?: string;
+    spesifikasi?: string;
+    tahunPerolehan?: string;
+    lokasi?: string;
+    ruangPenyimpanan?: string;
   }
 ) {
   try {
@@ -73,6 +88,11 @@ export async function updateKomoditas(
         totalHilang: data.totalHilang,
         stokTotal,
         stokTersedia,
+        merk: data.merk || null,
+        spesifikasi: data.spesifikasi || null,
+        tahunPerolehan: data.tahunPerolehan || null,
+        lokasi: data.lokasi || null,
+        ruangPenyimpanan: data.ruangPenyimpanan || null,
       },
     });
     

@@ -51,7 +51,7 @@ async function main() {
 
   // ============== KOMODITAS ==============
   const komoditasData = [
-    // BARANG (Aset — satuan pcs)
+    // BARANG (Aset)
     {
       nama: "Gelas Beaker 250ml",
       tipe: TipeKomoditas.BARANG,
@@ -59,6 +59,11 @@ async function main() {
       stokAwal: 30,
       stokTotal: 30,
       stokTersedia: 30,
+      merk: "Pyrex",
+      spesifikasi: "Borosilicate Glass, 250ml, graduated",
+      tahunPerolehan: "2022",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Lab. Kimia Dasar",
     },
     {
       nama: "Tabung Reaksi",
@@ -67,14 +72,24 @@ async function main() {
       stokAwal: 50,
       stokTotal: 50,
       stokTersedia: 50,
+      merk: "Iwaki",
+      spesifikasi: "16 x 150 mm, borosilicate",
+      tahunPerolehan: "2023",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Gudang 1",
     },
     {
       nama: "Mikroskop Binokuler",
       tipe: TipeKomoditas.BARANG,
-      satuan: "pcs",
+      satuan: "unit",
       stokAwal: 10,
       stokTotal: 10,
       stokTersedia: 10,
+      merk: "Olympus",
+      spesifikasi: "CX23, Binokuler, perbesaran 40x-1000x",
+      tahunPerolehan: "2020",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Lab. Struktur dan Mikroteknik",
     },
     {
       nama: "Pipet Tetes",
@@ -83,24 +98,35 @@ async function main() {
       stokAwal: 40,
       stokTotal: 40,
       stokTersedia: 40,
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Gudang 2",
     },
     {
       nama: "Bunsen Burner",
       tipe: TipeKomoditas.BARANG,
-      satuan: "pcs",
+      satuan: "buah",
       stokAwal: 15,
       stokTotal: 15,
       stokTersedia: 15,
+      merk: "Heraeus",
+      tahunPerolehan: "2021",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Lab. Kimia Dasar",
     },
     {
       nama: "Neraca Analitik",
       tipe: TipeKomoditas.BARANG,
-      satuan: "pcs",
+      satuan: "unit",
       stokAwal: 5,
       stokTotal: 5,
       stokTersedia: 5,
+      merk: "Ohaus",
+      spesifikasi: "Pioneer PA214, kapasitas 210g, ketelitian 0.1mg",
+      tahunPerolehan: "2020",
+      lokasi: "Kampus 2",
+      ruangPenyimpanan: "Lab. Ekologi & Lingkungan",
     },
-    // BAHAN (Consumable — satuan liter/gram)
+    // BAHAN (Consumable)
     {
       nama: "Aquades",
       tipe: TipeKomoditas.BAHAN,
@@ -108,6 +134,8 @@ async function main() {
       stokAwal: 20,
       stokTotal: 20,
       stokTersedia: 20,
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Gudang 1",
     },
     {
       nama: "HCl (Asam Klorida)",
@@ -116,6 +144,10 @@ async function main() {
       stokAwal: 5,
       stokTotal: 5,
       stokTersedia: 5,
+      merk: "Merck",
+      spesifikasi: "37%, p.a.",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Lab. Kimia Dasar",
     },
     {
       nama: "NaOH (Natrium Hidroksida)",
@@ -124,6 +156,10 @@ async function main() {
       stokAwal: 500,
       stokTotal: 500,
       stokTersedia: 500,
+      merk: "Merck",
+      spesifikasi: "Pellet, p.a.",
+      lokasi: "Kampus 3",
+      ruangPenyimpanan: "Gudang 2",
     },
     {
       nama: "Indikator Fenolftalein",
@@ -132,6 +168,8 @@ async function main() {
       stokAwal: 2,
       stokTotal: 2,
       stokTersedia: 2,
+      lokasi: "Kampus 2",
+      ruangPenyimpanan: "Lab. Ekologi & Lingkungan",
     },
   ];
 

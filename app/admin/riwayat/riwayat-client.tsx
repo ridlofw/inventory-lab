@@ -21,7 +21,8 @@ import {
   History,
   RotateCcw,
   ChevronDown,
-  Box
+  Box,
+  AlertTriangle
 } from "lucide-react";
 
 // Custom Dropdown Component to replace native <select>
@@ -168,7 +169,7 @@ export function RiwayatClient({ initialData }: { initialData: any[] }) {
       ["REKAP STOK INVENTARIS LABORATORIUM"],
       ["Data Diekstrak Pada:", format(new Date(), "dd MMMM yyyy HH:mm:ss", {locale: localeID})],
       [],
-      ["NAMA BARANG/BAHAN", "TIPE", "SATUAN", "STOK TOTAL (AWAL)", "STOK TERSEDIA (DI LEMARI)", "SEDANG DIPINJAM", "TOTAL RUSAK", "TOTAL HILANG"]
+      ["NAMA BARANG/BAHAN", "TIPE", "MERK", "SPESIFIKASI", "TAHUN", "SATUAN", "LOKASI", "RUANG PENYIMPANAN", "STOK TOTAL (AWAL)", "STOK TERSEDIA (DI LEMARI)", "SEDANG DIPINJAM", "TOTAL RUSAK", "TOTAL HILANG"]
     ];
 
     komoditasData.forEach((k: any) => {
@@ -176,8 +177,13 @@ export function RiwayatClient({ initialData }: { initialData: any[] }) {
       ws1Data.push([
         k.nama,
         k.tipe,
+        k.merk || "-",
+        k.spesifikasi || "-",
+        k.tahunPerolehan || "-",
         k.satuan,
-        k.stokTotal + k.totalRusak + k.totalHilang, // Stok Awal yang sebenarnya
+        k.lokasi || "-",
+        k.ruangPenyimpanan || "-",
+        k.stokTotal + k.totalRusak + k.totalHilang,
         k.stokTersedia,
         dipinjam,
         k.totalRusak,
@@ -186,7 +192,7 @@ export function RiwayatClient({ initialData }: { initialData: any[] }) {
     });
     
     const ws1 = XLSX.utils.aoa_to_sheet(ws1Data);
-    ws1['!cols'] = [{wch:35}, {wch:15}, {wch:10}, {wch:20}, {wch:25}, {wch:20}, {wch:15}, {wch:15}];
+    ws1['!cols'] = [{wch:30}, {wch:10}, {wch:20}, {wch:35}, {wch:15}, {wch:10}, {wch:15}, {wch:25}, {wch:18}, {wch:25}, {wch:18}, {wch:15}, {wch:15}];
 
     // --- SHEET 2: DAFTAR ASET BERMASALAH ---
     const problematicData = filteredData.filter(d => d.kondisiKembali === "RUSAK" || d.kondisiKembali === "HILANG");
