@@ -38,15 +38,15 @@ export default async function KatalogPage() {
       </div>
 
       <div className="grid lg:grid-cols-12 gap-8">
-        {/* Right Col: Cart Form (Sticky & First on Mobile) */}
-        <div className="lg:col-span-4 order-first lg:order-last">
+        {/* Right Col: Cart Form (Sticky on Desktop, Bottom on Mobile) */}
+        <div className="lg:col-span-4 order-last">
           <div className="sticky top-8 z-20">
             <CartForm katalog={katalog} />
           </div>
         </div>
 
         {/* Left Col: Grid of Items (Client Component for Pagination/Search) */}
-        <div className="lg:col-span-8 space-y-6 order-last lg:order-first">
+        <div className="lg:col-span-8 space-y-6 order-first">
           <KatalogClient katalog={katalog} />
         </div>
       </div>

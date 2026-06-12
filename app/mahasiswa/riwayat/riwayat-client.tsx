@@ -64,9 +64,14 @@ export function RiwayatClient({ items }: { items: any[] }) {
 
   const transactions = Object.values(groupedByTrx);
 
-  // Active Transactions: transctions that have AT LEAST ONE item in DIPINJAM or MENUNGGU_KEMBALI
+  // Active Transactions: transctions that have AT LEAST ONE active item (waiting approval, borrowed, waiting return)
   const activeTransactions = transactions.filter((t: any) => 
-    t.details.some((d: any) => d.status === StatusTransaksi.DIPINJAM || d.status === StatusTransaksi.MENUNGGU_KEMBALI)
+    t.details.some((d: any) => 
+      d.status === StatusTransaksi.DIPINJAM || 
+      d.status === StatusTransaksi.MENUNGGU_KEMBALI ||
+      d.status === StatusTransaksi.MENUNGGU_PINJAM ||
+      d.status === StatusTransaksi.MENUNGGU_MINTA
+    )
   );
   
   // History Items: we keep them flat per item just like before so the log table is detailed
@@ -128,6 +133,7 @@ export function RiwayatClient({ items }: { items: any[] }) {
               const borrowedAlatCount = trx.details.filter((d:any) => d.status === StatusTransaksi.DIPINJAM).length;
               const usedBahanCount = trx.details.filter((d:any) => d.status === StatusTransaksi.DIAMBIL).length;
               const waitingReturnCount = trx.details.filter((d:any) => d.status === StatusTransaksi.MENUNGGU_KEMBALI).length;
+              const waitingApprovalCount = trx.details.filter((d:any) => d.status === StatusTransaksi.MENUNGGU_PINJAM || d.status === StatusTransaksi.MENUNGGU_MINTA).length;
               
               return (
                 <Card key={trx.transaksi.id} className="p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-emerald-200 transition-colors bg-white">
@@ -168,6 +174,25 @@ export function RiwayatClient({ items }: { items: any[] }) {
                     </div>
                   </div>
 
+                  {/* Action or Badge */}
+                  <div className="flex-col items-center justify-center hidden md:flex shrink-0">
+                    {waitingApprovalCount > 0 && borrowedAlatCount === 0 && waitingReturnCount === 0 ? (
+                      <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 px-3 py-1.5 border-amber-200">
+                        <Clock className="w-3 h-3 mr-1" /> Menunggu Persetujuan
+                      </Badge>
+                    ) : waitingReturnCount > 0 ? (
+                      <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 px-3 py-1.5 border-orange-200">
+                        <RotateCcw className="w-3 h-3 mr-1" /> Sedang Dicek Admin
+                      </Badge>
+                    ) : borrowedAlatCount > 0 ? (
+                      <Button onClick={() => openReturnModal(trx)} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-11 px-6 shadow-md shadow-emerald-600/20">
+                        Kembalikan Aset
+                      </Button>
+                    ) : usedBahanCount > 0 && borrowedAlatCount === 0 ? (
+                      <Badge className="bg-blue-50 text-blue-700 border-blue-200">Selesai (Diambil)</Badge>
+                    ) : null}
+                  </div>
+
                   {/* Action Button */}
                   <div className="w-full md:w-auto shrink-0 md:pl-4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0">
                     {borrowedAlatCount > 0 ? (
@@ -180,6 +205,10 @@ export function RiwayatClient({ items }: { items: any[] }) {
                     ) : waitingReturnCount > 0 ? (
                       <div className="bg-orange-50 text-orange-700 text-xs font-bold px-4 py-3 rounded-xl border border-orange-200 text-center flex items-center justify-center gap-2">
                         <RotateCcw className="w-4 h-4 animate-spin-slow" /> Sedang Diperiksa<br/>Admin Lab
+                      </div>
+                    ) : waitingApprovalCount > 0 ? (
+                      <div className="bg-amber-50 text-amber-700 text-xs font-bold px-4 py-3 rounded-xl border border-amber-200 text-center flex items-center justify-center gap-2">
+                        <Clock className="w-4 h-4" /> Menunggu Persetujuan<br/>Admin Lab
                       </div>
                     ) : (
                       <div className="bg-slate-50 text-slate-500 text-xs font-bold px-4 py-3 rounded-xl border border-slate-200 text-center">

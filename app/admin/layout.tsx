@@ -26,10 +26,10 @@ export default async function AdminLayout({
           <div className="flex items-center gap-4">
             <SidebarTrigger className="-ml-2 hover:bg-emerald-50 hover:text-emerald-700" />
             <div className="h-4 w-px bg-slate-200" />
-            <span className="text-sm font-semibold text-slate-700">Manajemen Inventaris</span>
+            <span className="text-sm font-semibold text-slate-700 hidden sm:inline-block">Manajemen Inventaris</span>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
+            <div className="hidden sm:flex flex-col items-end">
               <span className="text-sm font-semibold leading-none">{dbUser.nama}</span>
               <span className="text-xs text-slate-500 mt-1">Administrator Lab</span>
             </div>

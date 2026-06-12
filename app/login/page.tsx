@@ -54,7 +54,7 @@ export default function LoginPage() {
       <div className="flex items-center justify-center p-6 sm:p-12 relative z-10">
         {/* Glow effect di mobile */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-md rounded-full bg-emerald-500/10 blur-3xl opacity-50 lg:hidden pointer-events-none" />
-        
+
         <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="flex flex-col items-center text-center space-y-3">
             <div className="p-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-2">
@@ -81,7 +81,7 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="admin@lab-walisongo.ac.id"
+                  placeholder="email@student.walisongo.ac.id"
                   required
                   autoComplete="email"
                   className="h-12 bg-slate-50/50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus-visible:ring-emerald-500 rounded-xl"

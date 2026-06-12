@@ -96,17 +96,17 @@ export function KatalogClient({ katalog }: { katalog: any[] }) {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4">
           <Button 
             variant="outline" size="sm" 
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="h-10 px-4 rounded-xl border-slate-200 font-semibold"
+            className="h-10 px-4 rounded-xl border-slate-200 font-semibold w-full sm:w-auto"
           >
             <ChevronLeft className="w-4 h-4 mr-1" /> Sebelumnya
           </Button>
           
-          <div className="text-sm font-bold text-slate-600">
+          <div className="text-sm font-bold text-slate-600 order-first sm:order-none mb-2 sm:mb-0">
             Halaman {currentPage} dari {totalPages}
           </div>
           
@@ -114,7 +114,7 @@ export function KatalogClient({ katalog }: { katalog: any[] }) {
             variant="outline" size="sm" 
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="h-10 px-4 rounded-xl border-slate-200 font-semibold"
+            className="h-10 px-4 rounded-xl border-slate-200 font-semibold w-full sm:w-auto"
           >
             Selanjutnya <ChevronRight className="w-4 h-4 ml-1" />
           </Button>

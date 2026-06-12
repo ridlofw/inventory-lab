@@ -355,14 +355,14 @@ export function RiwayatClient({ initialData }: { initialData: any[] }) {
       </div>
 
       <div className="overflow-x-auto min-h-[400px]">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-left border-collapse min-w-[900px]">
           <thead>
             <tr className="bg-slate-50/80 border-b border-slate-100">
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Tgl. Pengajuan / Estimasi</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Identitas</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Komoditas & Jumlah</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Catatan</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-[20%]">Tgl. Pengajuan / Estimasi</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-[20%]">Identitas</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-[25%]">Komoditas & Jumlah</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-[20%]">Catatan</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-[15%]">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
